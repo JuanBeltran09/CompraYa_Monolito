@@ -54,9 +54,14 @@ app.get('*', (req, res) => {
 });
 
 // Start listening
-app.listen(PORT, () => {
-  console.log(`===================================================`);
-  console.log(`🚀 CompraYa Monolith Server is running on port ${PORT}`);
-  console.log(`🔗 Local Address: http://localhost:${PORT}`);
-  console.log(`===================================================`);
-});
+// Start listening only in local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`===================================================`);
+    console.log(`🚀 CompraYa Monolith Server is running on port ${PORT}`);
+    console.log(`🔗 Local Address: http://localhost:${PORT}`);
+    console.log(`===================================================`);
+  });
+}
+
+module.exports = app;

@@ -4,7 +4,7 @@
   "description": "CompraYa Centralized Monolithic E-Commerce",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "dev": "node server.js",
     "seed": "node insertar_datos.js"
   },
   "dependencies": {
