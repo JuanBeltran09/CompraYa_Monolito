@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CompraYa - Centralizada Monolítica</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="CompraYa es una plataforma de e-commerce monolítica ultrarrápida impulsada por Node.js y PostgreSQL con instrumentación de rendimiento en tiempo real.">
+  <meta name="author" content="CompraYa Team">
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Vanilla CSS Style -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Premium Header & Glassmorphic Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="/" class="logo-link" id="nav-logo">
+        <div class="logo-icon">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <span class="logo-text">Compra<span>Ya</span></span>
+      </a>
+
+      <!-- Navigation Menu -->
+      <nav class="app-nav">
+        <ul>
+          <li><a href="#" class="nav-link active" id="btn-nav-catalog"><i class="fa-solid fa-store"></i> Catálogo</a></li>
+          <li><a href="#" class="nav-link" id="btn-nav-cart"><i class="fa-solid fa-cart-shopping"></i> Carrito <span class="badge-cart-count" id="cart-count">0</span></a></li>
+          <li><a href="#" class="nav-link" id="btn-nav-orders"><i class="fa-solid fa-receipt"></i> Mis Pedidos</a></li>
+        </ul>
+      </nav>
+
+      <!-- User Auth Section -->
+      <div class="header-auth" id="header-auth-container">
+        <!-- Will be dynamically populated by JS -->
+        <button class="btn btn-outline" id="btn-login-trigger"><i class="fa-solid fa-arrow-right-to-bracket"></i> Iniciar Sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="app-main-content">
+    
+    <!-- SECTION 1: CATALOG VIEW (Active by default) -->
+    <section id="view-catalog" class="app-view active">
+      <!-- Premium Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <span class="hero-tagline"><i class="fa-solid fa-microchip"></i> Rendimiento Extremo Monolítico</span>
+          <h1 class="hero-title">E-Commerce a la Velocidad del Rayo</h1>
+          <p class="hero-desc">Explora más de 500,000 productos con paginación optimizada, filtrado indexado y monitoreo de latencia SQL en tiempo real.</p>
+        </div>
+      </div>
+
+      <!-- Catalog Controls & Sidebar Layout -->
+      <div class="catalog-layout">
+        
+        <!-- Filter Sidebar -->
+        <aside class="catalog-sidebar">
+          <div class="sidebar-card">
+            <h3 class="sidebar-title"><i class="fa-solid fa-filter"></i> Filtros de Búsqueda</h3>
+            
+            <!-- Search bar -->
+            <div class="filter-group">
+              <label for="search-input">Buscar producto</label>
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Nombre o SKU..." autocomplete="off">
+              </div>
+            </div>
+
+            <!-- Categories selector -->
+            <div class="filter-group">
+              <label>Categorías</label>
+              <div class="category-pills-container" id="categories-container">
+                <!-- Dynamically loaded -->
+                <div class="skeleton skeleton-pill"></div>
+                <div class="skeleton skeleton-pill"></div>
+                <div class="skeleton skeleton-pill"></div>
+              </div>
+            </div>
+            
+            <button class="btn btn-primary btn-full" id="btn-clear-filters"><i class="fa-solid fa-rotate-left"></i> Limpiar Filtros</button>
+          </div>
+        </aside>
+
+        <!-- Product Listings -->
+        <div class="catalog-content">
+          <!-- Timing Summary Badge at catalog level -->
+          <div class="timing-strip" id="catalog-timing-strip">
+            <div class="timing-badge timing-pending">
+              <i class="fa-solid fa-spinner fa-spin"></i> Cargando métricas de base de datos...
+            </div>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="product-grid" id="product-grid-container">
+            <!-- Loading Skeletons -->
+            <div class="product-card skeleton-card"></div>
+            <div class="product-card skeleton-card"></div>
+            <div class="product-card skeleton-card"></div>
+            <div class="product-card skeleton-card"></div>
+          </div>
+
+          <!-- Pagination Controls -->
+          <div class="pagination-wrapper" id="pagination-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: SHOPPING CART & CHECKOUT -->
+    <section id="view-cart" class="app-view">
+      <div class="section-header">
+        <h2><i class="fa-solid fa-cart-shopping"></i> Tu Carrito de Compras</h2>
+        <div class="timing-strip" id="cart-timing-strip"></div>
+      </div>
+
+      <div class="cart-layout" id="cart-layout-container">
+        <!-- Cart Items List -->
+        <div class="cart-items-section">
+          <div class="glass-card table-responsive">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio Unitario</th>
+                  <th>Cantidad</th>
+                  <th>Subtotal</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="cart-table-body">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Checkout & Summary Sidebar -->
+        <div class="cart-summary-section">
+          <!-- Summary Card -->
+          <div class="glass-card summary-card">
+            <h3 class="card-title">Resumen de Compra</h3>
+            
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span id="cart-summary-subtotal">$0 COP</span>
+            </div>
+            <div class="summary-row">
+              <span>Envío</span>
+              <span class="text-success">Gratis</span>
+            </div>
+            <hr class="card-divider">
+            <div class="summary-row summary-total">
+              <span>Total</span>
+              <span id="cart-summary-total">$0 COP</span>
+            </div>
+
+            <!-- Checkout form -->
+            <div class="checkout-form-container mt-4" id="checkout-form-box">
+              <h4 class="form-title"><i class="fa-solid fa-truck-fast"></i> Datos de Entrega</h4>
+              <form id="checkout-form">
+                <div class="form-group">
+                  <label for="checkout-address">Dirección de Envío</label>
+                  <input type="text" id="checkout-address" placeholder="Ej. Calle 45 # 12-34, Apto 501" required>
+                </div>
+                <div class="form-group">
+                  <label for="checkout-city">Ciudad</label>
+                  <select id="checkout-city" required>
+                    <option value="Bogotá" selected>Bogotá</option>
+                    <option value="Medellín">Medellín</option>
+                    <option value="Cali">Cali</option>
+                    <option value="Barranquilla">Barranquilla</option>
+                    <option value="Bucaramanga">Bucaramanga</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Método de Pago Simulado</label>
+                  <div class="payment-radios">
+                    <label class="payment-radio-label">
+                      <input type="radio" name="payment_method" value="PSE" checked>
+                      <span class="custom-radio"></span>
+                      <i class="fa-solid fa-building-columns"></i> PSE (Débito)
+                    </label>
+                    <label class="payment-radio-label">
+                      <input type="radio" name="payment_method" value="tarjeta">
+                      <span class="custom-radio"></span>
+                      <i class="fa-solid fa-credit-card"></i> Tarjeta de Crédito
+                    </label>
+                    <label class="payment-radio-label">
+                      <input type="radio" name="payment_method" value="efectivo">
+                      <span class="custom-radio"></span>
+                      <i class="fa-solid fa-money-bill-wave"></i> Efectivo
+                    </label>
+                  </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full btn-large" id="btn-checkout-submit">
+                  <i class="fa-solid fa-lock"></i> Finalizar Compra (ACID Tx)
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty Cart State -->
+      <div class="glass-card text-center p-5 hidden" id="cart-empty-state">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-cart-flatbed"></i>
+        </div>
+        <h3>Tu carrito está vacío</h3>
+        <p class="text-muted">Explora nuestro catálogo y agrega productos para comenzar a comprar.</p>
+        <button class="btn btn-primary mt-3" id="btn-cart-empty-catalog"><i class="fa-solid fa-store"></i> Ver Catálogo</button>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MY ORDERS LIST -->
+    <section id="view-orders" class="app-view">
+      <div class="section-header">
+        <h2><i class="fa-solid fa-receipt"></i> Tus Pedidos Realizados</h2>
+        <div class="timing-strip" id="orders-timing-strip"></div>
+      </div>
+
+      <!-- Historical Orders Accordion List -->
+      <div class="orders-list-container" id="orders-list-box">
+        <!-- Populated dynamically -->
+        <div class="glass-card text-center p-5">
+          <i class="fa-solid fa-spinner fa-spin fa-2x text-primary"></i>
+          <p class="mt-2">Cargando tu historial de compras...</p>
+        </div>
+      </div>
+
+      <!-- Guest/Unauthenticated State for Orders -->
+      <div class="glass-card text-center p-5 hidden" id="orders-guest-state">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-user-lock"></i>
+        </div>
+        <h3>Acceso Restringido</h3>
+        <p class="text-muted">Inicia sesión en tu cuenta para ver el historial de pedidos y los detalles de tus facturas.</p>
+        <button class="btn btn-primary mt-3" id="btn-orders-login-trigger"><i class="fa-solid fa-arrow-right-to-bracket"></i> Iniciar Sesión</button>
+      </div>
+    </section>
+
+    <!-- SECTION 4: LOGIN / REGISTER VIEW -->
+    <section id="view-auth" class="app-view">
+      <div class="auth-wrapper">
+        <div class="auth-card glass-card">
+          <!-- Tabs Navigation -->
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="tab-login">Iniciar Sesión</button>
+            <button class="auth-tab-btn" id="tab-register">Registrarse</button>
+          </div>
+
+          <!-- Login Form -->
+          <div class="auth-tab-content active" id="auth-login-box">
+            <h3 class="auth-title">Bienvenido de nuevo</h3>
+            <p class="auth-subtitle">Ingresa con tus credenciales de prueba o registra un nuevo usuario.</p>
+            
+            <form id="form-login">
+              <div class="form-group">
+                <label for="login-email">Correo Electrónico</label>
+                <input type="email" id="login-email" placeholder="Ej. usuario0@compraya.com" required autocomplete="email">
+                <small class="text-muted">Prueba con: <strong>usuario0@compraya.com</strong></small>
+              </div>
+              <div class="form-group">
+                <label for="login-password">Contraseña</label>
+                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                <small class="text-muted">Contraseña demo: <strong>admin123</strong></small>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full btn-large">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar
+              </button>
+            </form>
+          </div>
+
+          <!-- Register Form -->
+          <div class="auth-tab-content" id="auth-register-box">
+            <h3 class="auth-title">Crea una cuenta nueva</h3>
+            <p class="auth-subtitle">Regístrate para habilitar el carrito y pedidos persistentes en PostgreSQL.</p>
+            
+            <form id="form-register">
+              <div class="form-group">
+                <label for="reg-name">Nombre Completo</label>
+                <input type="text" id="reg-name" placeholder="Ej. Juan Pérez" required>
+              </div>
+              <div class="form-group">
+                <label for="reg-email">Correo Electrónico</label>
+                <input type="email" id="reg-email" placeholder="Ej. juan.perez@email.com" required autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label for="reg-password">Contraseña</label>
+                <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+              </div>
+              <div class="form-group">
+                <label for="reg-city">Ciudad de Residencia</label>
+                <select id="reg-city" required>
+                  <option value="Bogotá" selected>Bogotá</option>
+                  <option value="Medellín">Medellín</option>
+                  <option value="Cali">Cali</option>
+                  <option value="Barranquilla">Barranquilla</option>
+                  <option value="Bucaramanga">Bucaramanga</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reg-address">Dirección Completa</label>
+                <input type="text" id="reg-address" placeholder="Ej. Calle 123 # 45-67" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full btn-large">
+                <i class="fa-solid fa-user-plus"></i> Crear Cuenta
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FLOATING DATABASE PERFORMANCE & LATENCY MONITOR PANEL -->
+  <div class="db-monitor-panel closed" id="db-monitor">
+    <div class="monitor-header" id="db-monitor-header">
+      <div class="monitor-title">
+        <span class="pulse-indicator"></span>
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Monitor de Latencia SQL</span>
+      </div>
+      <div class="monitor-controls">
+        <span class="avg-latency-badge" id="monitor-avg-badge">0.0ms</span>
+        <button class="btn-icon" id="btn-toggle-monitor"><i class="fa-solid fa-chevron-up"></i></button>
+      </div>
+    </div>
+    <div class="monitor-body">
+      <div class="monitor-summary">
+        <div><strong>Consultas en esta página:</strong> <span id="monitor-query-count">0</span></div>
+        <div><strong>Última Operación:</strong> <span id="monitor-last-op">Ninguna</span></div>
+      </div>
+      <div class="monitor-chart-container">
+        <!-- Visual graph placeholder (dynamic bars representing latencies) -->
+        <div class="monitor-bar-chart" id="monitor-latency-chart">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+      <h4 class="history-title">Historial de Consultas SQL Ejecutadas</h4>
+      <div class="monitor-query-list" id="monitor-queries-list-container">
+        <div class="empty-query-log">
+          <i class="fa-solid fa-terminal"></i>
+          <p>Navega en el sitio o realiza una acción para registrar las consultas ejecutadas en la base de datos PostgreSQL remota.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="modal-overlay" id="product-detail-modal">
+    <div class="modal-card glass-card">
+      <button class="modal-close" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body" id="modal-product-content">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
