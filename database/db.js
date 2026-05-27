@@ -23,6 +23,13 @@ async function trackedQuery(text, params = [], operationDescription = 'SQL Query
   const start = process.hrtime.bigint();
   try {
     const res = await pool.query(text, params);
+    
+    // Simulate database latency if QUERY_DELAY_MS is set
+    const delayMs = parseInt(process.env.QUERY_DELAY_MS || '0', 10);
+    if (delayMs > 0) {
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+
     const end = process.hrtime.bigint();
     const durationMs = Number(end - start) / 1e6; // nanoseconds to milliseconds
     
@@ -54,6 +61,13 @@ async function trackedTransaction(transactionFn, operationDescription = 'Transac
     const qStart = process.hrtime.bigint();
     try {
       const res = await client.query(text, params);
+      
+      // Simulate database latency if QUERY_DELAY_MS is set
+      const delayMs = parseInt(process.env.QUERY_DELAY_MS || '0', 10);
+      if (delayMs > 0) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+
       const qEnd = process.hrtime.bigint();
       const qDurationMs = Number(qEnd - qStart) / 1e6;
       queries.push({
